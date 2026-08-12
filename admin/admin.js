@@ -10,14 +10,6 @@
     'Meta descripción demasiado larga': { field: 'excerpt', maxLen: 160 }
   };
 
-  const CATEGORY_ICONS = {
-    'Microeconomía': '📊',
-    'Comercio Exterior': '🚢',
-    'Aranceles': '📦',
-    'Mercado Local': '🏪',
-    'Análisis': '🔎'
-  };
-
   const els = {
     loginScreen: document.getElementById('login-screen'),
     loginForm: document.getElementById('login-form'),
@@ -281,7 +273,7 @@
   }
 
   function updatePreview() {
-    els.pvBadge.textContent = (CATEGORY_ICONS[els.category.value] || '📰') + ' ' + els.category.value;
+    els.pvBadge.textContent = els.category.value;
     els.pvTitle.textContent = els.title.value || 'Título de la nota';
     els.pvExcerpt.textContent = els.excerpt.value || 'La bajada aparece acá.';
     els.pvAuthor.textContent = els.author.value || 'Redacción Micro Noticias';
