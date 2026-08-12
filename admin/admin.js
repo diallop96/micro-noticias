@@ -1,6 +1,15 @@
 (function () {
   const PIN_KEY = 'mn-admin-pin';
 
+  const SEO_TARGET_SCORE = 90;
+  // Coinciden textualmente con las etiquetas que genera admin/seo.js:
+  // son los únicos ajustes que se pueden aplicar sin inventar contenido
+  // (acortar texto ya escrito), por eso son los únicos con botón automático.
+  const SEO_AUTO_FIXABLE = {
+    'Título demasiado largo': { field: 'title', maxLen: 60 },
+    'Meta descripción demasiado larga': { field: 'excerpt', maxLen: 160 }
+  };
+
   const CATEGORY_ICONS = {
     'Microeconomía': '📊',
     'Comercio Exterior': '🚢',
@@ -45,7 +54,8 @@
     pvImg: document.getElementById('pv-img'),
     pvBody: document.getElementById('pv-body'),
     seoScore: document.getElementById('seo-score'),
-    seoChecks: document.getElementById('seo-checks')
+    seoChecks: document.getElementById('seo-checks'),
+    seoPlan: document.getElementById('seo-plan')
   };
 
   let notes = [];
@@ -216,7 +226,51 @@
         '</div>' +
       '</div>'
     ).join('');
+
+    renderSeoPlan(result);
   }
+
+  function renderSeoPlan(result) {
+    const plan = window.MicroNoticias.getImprovementPlan(result, SEO_TARGET_SCORE);
+    const esc2 = window.MicroNoticias.escapeHtml;
+
+    if (plan.done) {
+      els.seoPlan.innerHTML =
+        '<div class="seo-plan__done">🎉 Nivel ' + SEO_TARGET_SCORE + '+ alcanzado — esta nota está bien optimizada para buscadores.</div>';
+      return;
+    }
+
+    els.seoPlan.innerHTML =
+      '<div class="seo-plan__head"><p class="seo-plan__title">Camino más corto a ' + SEO_TARGET_SCORE + '/100</p></div>' +
+      '<div class="seo-plan__steps">' +
+      plan.items.map(it => {
+        const fix = SEO_AUTO_FIXABLE[it.label];
+        return (
+          '<div class="seo-plan__step">' +
+            '<span class="seo-plan__step-num"></span>' +
+            '<div class="seo-plan__step-body">' +
+              '<div class="seo-plan__step-label">' + esc2(it.label) + '</div>' +
+              (it.detail ? '<div class="seo-plan__step-detail">' + esc2(it.detail) + '</div>' : '') +
+              (fix ? '<button type="button" class="seo-plan__fix-btn" data-fix-field="' + fix.field + '" data-fix-len="' + fix.maxLen + '">Acortar automáticamente</button>' : '') +
+            '</div>' +
+            '<span class="seo-plan__step-target">→ ~' + it.projectedScore + '/100</span>' +
+          '</div>'
+        );
+      }).join('') +
+      '</div>';
+  }
+
+  els.seoPlan.addEventListener('click', (e) => {
+    const btn = e.target.closest('.seo-plan__fix-btn');
+    if (!btn) return;
+    const field = btn.dataset.fixField;
+    const maxLen = Number(btn.dataset.fixLen);
+    const target = field === 'title' ? els.title : field === 'excerpt' ? els.excerpt : null;
+    if (!target) return;
+    target.value = window.MicroNoticias.trimToLength(target.value, maxLen);
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+    target.focus();
+  });
 
   function updateCounts() {
     const eLen = els.excerpt.value.length, bLen = els.body.value.length;

@@ -186,12 +186,55 @@
     // --- Puntaje ---
     const scored = checks.filter(c => c.status !== 'na');
     const points = scored.reduce((sum, c) => sum + (c.status === 'good' ? 2 : c.status === 'ok' ? 1 : 0), 0);
-    const max = scored.length * 2;
-    const score = max ? Math.round((points / max) * 100) : 0;
+    const maxPoints = scored.length * 2;
+    const score = maxPoints ? Math.round((points / maxPoints) * 100) : 0;
 
-    return { score, checks };
+    return { score, points, maxPoints, checks };
+  }
+
+  /**
+   * A partir de un resultado de analyzeSeo(), arma el camino más corto
+   * (menos ítems) para alcanzar targetScore (90 por defecto): ordena lo
+   * pendiente por cuántos puntos suma arreglarlo y va acumulando hasta
+   * llegar a la meta, mostrando el puntaje proyectado en cada paso.
+   */
+  function getImprovementPlan(result, targetScore) {
+    targetScore = targetScore == null ? 90 : targetScore;
+    if (result.score >= targetScore || !result.maxPoints) {
+      return { done: true, targetScore, items: [] };
+    }
+
+    const pending = result.checks
+      .filter(c => c.status !== 'good' && c.status !== 'na')
+      .map(c => Object.assign({}, c, { gain: c.status === 'ok' ? 1 : 2 }))
+      .sort((a, b) => b.gain - a.gain);
+
+    let cumPoints = result.points;
+    const items = [];
+    for (const c of pending) {
+      cumPoints += c.gain;
+      items.push(Object.assign({}, c, {
+        projectedScore: Math.round((cumPoints / result.maxPoints) * 100)
+      }));
+      if (cumPoints / result.maxPoints * 100 >= targetScore) break;
+    }
+    return { done: false, targetScore, items };
+  }
+
+  // Corta texto en el último espacio antes de maxLen, sin agregar "..." —
+  // pensado para título/meta descripción, que deben quedar completos y
+  // legibles, no truncados visualmente. No es generación de contenido,
+  // solo acorta lo que ya escribiste.
+  function trimToLength(text, maxLen) {
+    const t = String(text || '').trim();
+    if (t.length <= maxLen) return t;
+    const cut = t.slice(0, maxLen);
+    const lastSpace = cut.lastIndexOf(' ');
+    return (lastSpace > maxLen * 0.5 ? cut.slice(0, lastSpace) : cut).trim();
   }
 
   global.MicroNoticias = global.MicroNoticias || {};
   global.MicroNoticias.analyzeSeo = analyzeSeo;
+  global.MicroNoticias.getImprovementPlan = getImprovementPlan;
+  global.MicroNoticias.trimToLength = trimToLength;
 })(window);
