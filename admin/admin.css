@@ -1,0 +1,213 @@
+/* Admin-panel-only styles. Depends on css/styles.css for variables/fonts. */
+
+.admin-shell { min-height: 100vh; display: flex; flex-direction: column; }
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.admin-header__right { display: flex; align-items: center; gap: 12px; }
+
+.pill {
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.btn-plain {
+  font-family: var(--font-body);
+  font-size: .85rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.btn-plain:hover { border-color: var(--accent); }
+.btn-plain:disabled { opacity: .5; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1a1406;
+}
+.btn-primary:hover { background: var(--accent-strong); border-color: var(--accent-strong); }
+
+.btn-danger { color: #b3432f; border-color: #b3432f33; }
+.btn-danger:hover { background: #b3432f14; border-color: #b3432f; }
+
+/* Login screen */
+
+.login-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+}
+.login-card h1 { font-family: var(--font-display); font-size: 1.4rem; margin: 4px 0 6px; }
+.login-card p { color: var(--text-muted); font-size: .88rem; margin: 0 0 22px; }
+.login-card input {
+  width: 100%;
+  font-size: 1.4rem;
+  letter-spacing: .3em;
+  text-align: center;
+  font-family: var(--font-mono);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.login-card input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.login-error {
+  color: #b3432f;
+  font-size: .82rem;
+  min-height: 1.2em;
+  margin-bottom: 10px;
+}
+.login-hint {
+  margin-top: 18px;
+  font-size: .76rem;
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+/* Dashboard layout */
+
+.admin-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+@media (min-width: 980px) {
+  .admin-main { grid-template-columns: 340px 1fr; }
+}
+
+.notes-panel {
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  max-height: none;
+}
+@media (min-width: 980px) {
+  .notes-panel { max-height: calc(100vh - 65px); overflow-y: auto; position: sticky; top: 65px; }
+}
+
+.notes-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.status-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.status-tabs button {
+  flex: 1;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.status-tabs button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+:root[data-theme="dark"] .status-tabs button.active { background: var(--accent-strong); color: #1a1406; border-color: var(--accent-strong); }
+
+.note-list-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+.note-list-item:hover { background: var(--bg-subtle); }
+.note-list-item.active { background: var(--bg-subtle); border-color: var(--border-strong); }
+.note-list-item__title { font-weight: 600; font-size: .92rem; margin-bottom: 4px; }
+.note-list-item__meta { display: flex; gap: 8px; align-items: center; font-size: .74rem; color: var(--text-faint); }
+.dot-draft { color: #b3432f; }
+.dot-published { color: #3c8a5c; }
+
+.editor-panel { padding: 24px; }
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 1280px) {
+  .editor-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: .82rem; font-weight: 700; margin-bottom: 6px; color: var(--text-muted); }
+.field input, .field select, .field textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: .95rem;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+.field textarea { font-family: var(--font-mono); font-size: .88rem; line-height: 1.6; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field-hint { font-size: .74rem; color: var(--text-faint); margin-top: 4px; }
+.char-count { font-size: .72rem; color: var(--text-faint); text-align: right; margin-top: 4px; }
+.char-count.over { color: #b3432f; font-weight: 700; }
+
+.form-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+
+.form-msg { font-size: .85rem; padding: 10px 12px; border-radius: 8px; margin-bottom: 16px; display: none; }
+.form-msg.show { display: block; }
+.form-msg.error { background: #b3432f14; color: #b3432f; border: 1px solid #b3432f33; }
+.form-msg.success { background: #3c8a5c14; color: #3c8a5c; border: 1px solid #3c8a5c33; }
+
+.preview-panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  background: var(--bg-elevated);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.preview-panel__label {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--text-faint);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.empty-notes { color: var(--text-faint); font-size: .85rem; padding: 20px 4px; }

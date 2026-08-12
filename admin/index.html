@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de administración — Micro Noticias</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('mn-theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="../css/styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="admin-shell">
+
+  <header class="admin-header">
+    <a class="brand" href="../index.html">
+      <span class="brand__mark">Micro<span>Noticias</span></span>
+      <span class="pill">Panel privado</span>
+    </a>
+    <div class="admin-header__right">
+      <button class="theme-toggle" type="button" aria-label="Cambiar tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <button class="btn-plain" id="btn-logout" type="button" style="display:none;">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Login screen: shown until a valid PIN is confirmed against the local admin server -->
+  <section class="login-screen" id="login-screen">
+    <div class="login-card">
+      <div style="font-size:2rem;">🔒</div>
+      <h1>Acceso al panel</h1>
+      <p>Ingresá el PIN que te muestra la consola donde corre <code>node server/admin-server.js</code>.</p>
+      <form id="login-form" autocomplete="off">
+        <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" id="pin-input" placeholder="••••••" aria-label="PIN de acceso" autofocus>
+        <div class="login-error" id="login-error"></div>
+        <button type="submit" class="btn-plain btn-primary" style="width:100%;">Entrar</button>
+      </form>
+      <p class="login-hint">Este panel solo funciona si el servidor local está corriendo (<code>node server/admin-server.js</code>) y solo es accesible desde esta computadora (127.0.0.1).</p>
+    </div>
+  </section>
+
+  <!-- Dashboard: hidden until login succeeds -->
+  <div class="admin-main" id="admin-main" style="display:none;">
+    <aside class="notes-panel">
+      <div class="notes-panel__head">
+        <h2 class="section-title" style="font-size:1rem;">Notas</h2>
+        <button class="btn-plain" id="btn-new" type="button">+ Nueva</button>
+      </div>
+      <div class="status-tabs">
+        <button data-status="all" class="active" type="button">Todas</button>
+        <button data-status="draft" type="button">Borradores</button>
+        <button data-status="published" type="button">Publicadas</button>
+      </div>
+      <div id="note-list"></div>
+    </aside>
+
+    <section class="editor-panel">
+      <div class="form-msg" id="form-msg"></div>
+
+      <div class="editor-grid">
+        <form id="note-form" autocomplete="off">
+          <input type="hidden" id="note-id">
+
+          <div class="field">
+            <label for="f-title">Título</label>
+            <input id="f-title" maxlength="200" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-category">Categoría</label>
+              <select id="f-category" required>
+                <option value="Microeconomía">Microeconomía</option>
+                <option value="Comercio Exterior">Comercio Exterior</option>
+                <option value="Aranceles">Aranceles</option>
+                <option value="Mercado Local">Mercado Local</option>
+                <option value="Análisis">Análisis</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-author">Autor</label>
+              <input id="f-author" maxlength="100" placeholder="Redacción Micro Noticias">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-excerpt">Bajada / resumen</label>
+            <textarea id="f-excerpt" rows="2" maxlength="400" required></textarea>
+            <div class="char-count" id="excerpt-count">0 / 400</div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-cover">Imagen de portada (URL)</label>
+              <input id="f-cover" type="url" placeholder="https://...">
+            </div>
+            <div class="field">
+              <label for="f-read">Minutos de lectura</label>
+              <input id="f-read" type="number" min="1" max="60" placeholder="Auto">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-body">Cuerpo de la nota (markdown simple: ## títulos, **negrita**, *cursiva*, listas, &gt; citas, [links](url))</label>
+            <textarea id="f-body" rows="16" maxlength="20000" required></textarea>
+            <div class="char-count" id="body-count">0 / 20000</div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-plain btn-primary" id="btn-save">Guardar borrador</button>
+            <button type="button" class="btn-plain" id="btn-publish">Aprobar y publicar</button>
+            <button type="button" class="btn-plain" id="btn-unpublish" style="display:none;">Despublicar</button>
+            <button type="button" class="btn-plain btn-danger" id="btn-delete" style="display:none;">Eliminar</button>
+          </div>
+        </form>
+
+        <div class="preview-panel">
+          <div class="preview-panel__label">Vista previa</div>
+          <div class="article__eyebrow"><span class="badge" id="pv-badge">📊 Microeconomía</span></div>
+          <h1 class="article__title" id="pv-title" style="font-size:1.7rem;">Título de la nota</h1>
+          <p class="article__excerpt" id="pv-excerpt" style="font-size:1rem;">La bajada aparece acá.</p>
+          <div class="meta-line"><span id="pv-author">Redacción</span><span class="dot"></span><span id="pv-read">4 min de lectura</span></div>
+          <div class="article__media" id="pv-media" style="display:none;"><img id="pv-img" alt=""></div>
+          <div class="article__body" id="pv-body"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="../js/markdown.js"></script>
+<script src="../js/theme.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

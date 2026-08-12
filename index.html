@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Micro Noticias — Comercio exterior y microeconomía</title>
+<meta name="description" content="Análisis y noticias sobre productos importados, tipo de cambio, aranceles y microeconomía aplicada.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('mn-theme');
+      var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Saltar al contenido</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html">
+      <span class="brand__mark">Micro<span>Noticias</span></span>
+      <span class="brand__tag">Importación · Microeconomía</span>
+    </a>
+    <nav class="site-nav">
+      <div class="site-nav__links">
+        <a href="index.html" class="active">Portada</a>
+        <a href="index.html#note-grid">Últimas notas</a>
+        <a href="admin/index.html">Panel</a>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Cambiar tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </nav>
+  </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__inner">
+      <span>Tipo de cambio y traslado a precios <b>·</b></span>
+      <span>Aranceles y costo de reposición <b>·</b></span>
+      <span>Elasticidad-precio en bienes importados <b>·</b></span>
+      <span>Márgenes de importación en foco <b>·</b></span>
+      <span>Microeconomía del comercio exterior <b>·</b></span>
+      <span>Tipo de cambio y traslado a precios <b>·</b></span>
+      <span>Aranceles y costo de reposición <b>·</b></span>
+      <span>Elasticidad-precio en bienes importados <b>·</b></span>
+      <span>Márgenes de importación en foco <b>·</b></span>
+      <span>Microeconomía del comercio exterior <b>·</b></span>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="container">
+    <section class="hero">
+      <div class="hero__eyebrow">Portada</div>
+      <div class="featured" id="featured">
+        <div class="featured__media skeleton" style="aspect-ratio:16/10;"></div>
+        <div>
+          <div class="skeleton" style="height:14px;width:120px;margin-bottom:14px;"></div>
+          <div class="skeleton" style="height:34px;width:90%;margin-bottom:10px;"></div>
+          <div class="skeleton" style="height:34px;width:60%;margin-bottom:18px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <h2 class="section-title">Últimas notas</h2>
+      <div class="filter-row" id="filters"></div>
+    </div>
+
+    <section class="note-grid" id="note-grid" aria-live="polite">
+      <div class="skeleton" style="height:320px;"></div>
+      <div class="skeleton" style="height:320px;"></div>
+      <div class="skeleton" style="height:320px;"></div>
+    </section>
+
+    <div class="cta-strip">
+      <div>
+        <h3>¿Sos parte del equipo editorial?</h3>
+        <p>Escribí, previsualizá y aprobá notas nuevas desde el panel de administración local.</p>
+      </div>
+      <a class="btn" href="admin/index.html">Ir al panel
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div>
+      <div class="brand__mark" style="font-size:1.1rem;">Micro<span>Noticias</span></div>
+      <p>Noticias y análisis sobre productos importados y microeconomía.</p>
+    </div>
+    <div>© <span id="year"></span> Micro Noticias · Publicación privada, contenido curado y aprobado por la redacción.</div>
+  </div>
+</footer>
+
+<script src="js/markdown.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>
