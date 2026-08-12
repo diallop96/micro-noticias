@@ -23,6 +23,7 @@
     formMsg: document.getElementById('form-msg'),
     id: document.getElementById('note-id'),
     title: document.getElementById('f-title'),
+    keyword: document.getElementById('f-keyword'),
     category: document.getElementById('f-category'),
     author: document.getElementById('f-author'),
     excerpt: document.getElementById('f-excerpt'),
@@ -42,7 +43,9 @@
     pvRead: document.getElementById('pv-read'),
     pvMedia: document.getElementById('pv-media'),
     pvImg: document.getElementById('pv-img'),
-    pvBody: document.getElementById('pv-body')
+    pvBody: document.getElementById('pv-body'),
+    seoScore: document.getElementById('seo-score'),
+    seoChecks: document.getElementById('seo-checks')
   };
 
   let notes = [];
@@ -162,6 +165,7 @@
     currentId = note ? note.id : null;
     els.id.value = note ? note.id : '';
     els.title.value = note ? note.title : '';
+    els.keyword.value = note ? (note.focusKeyword || '') : '';
     els.category.value = note ? note.category : 'Microeconomía';
     els.author.value = note ? (note.author || '') : '';
     els.excerpt.value = note ? note.excerpt : '';
@@ -177,8 +181,41 @@
 
     updateCounts();
     updatePreview();
+    updateSeoPanel(note ? note.slug : '');
     renderList();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function estimateSlug(title) {
+    return String(title)
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function updateSeoPanel(knownSlug) {
+    const result = window.MicroNoticias.analyzeSeo({
+      title: els.title.value,
+      excerpt: els.excerpt.value,
+      body: els.body.value,
+      coverImage: els.cover.value.trim(),
+      focusKeyword: els.keyword.value,
+      slug: knownSlug || estimateSlug(els.title.value)
+    });
+
+    const scoreClass = result.score >= 80 ? 'good' : result.score >= 50 ? 'ok' : 'bad';
+    els.seoScore.textContent = String(result.score);
+    els.seoScore.className = 'seo-score ' + scoreClass;
+
+    els.seoChecks.innerHTML = result.checks.map(c =>
+      '<div class="seo-check ' + c.status + '">' +
+        '<span class="seo-check__icon">' + (c.status === 'good' ? '✓' : c.status === 'ok' ? '!' : '✕') + '</span>' +
+        '<div><div class="seo-check__label">' + window.MicroNoticias.escapeHtml(c.label) + '</div>' +
+        (c.detail ? '<div class="seo-check__detail">' + window.MicroNoticias.escapeHtml(c.detail) + '</div>' : '') +
+        '</div>' +
+      '</div>'
+    ).join('');
   }
 
   function updateCounts() {
@@ -208,6 +245,7 @@
     els.form.addEventListener(evt, (e) => {
       if (e.target.id === 'f-excerpt' || e.target.id === 'f-body') updateCounts();
       updatePreview();
+      updateSeoPanel();
     });
   });
 
@@ -216,6 +254,7 @@
   function currentPayload() {
     return {
       title: els.title.value.trim(),
+      focusKeyword: els.keyword.value.trim(),
       category: els.category.value,
       author: els.author.value.trim(),
       excerpt: els.excerpt.value.trim(),

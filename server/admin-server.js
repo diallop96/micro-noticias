@@ -49,7 +49,8 @@ const LIMITS = {
   category: 60,
   author: 100,
   coverImage: 500,
-  body: 20000
+  body: 20000,
+  focusKeyword: 80
 };
 
 // ---------- Config / PIN ----------
@@ -194,6 +195,7 @@ function validateNoteInput(input, isUpdate) {
   str('author', false, LIMITS.author);
   str('coverImage', false, LIMITS.coverImage);
   str('body', true, LIMITS.body);
+  str('focusKeyword', false, LIMITS.focusKeyword);
 
   if (clean.category && !ALLOWED_CATEGORIES.includes(clean.category)) {
     errors.push('category debe ser una de: ' + ALLOWED_CATEGORIES.join(', '));
@@ -349,7 +351,7 @@ async function handleApi(req, res, pathname) {
       const existing = data.notes[idx];
       const merged = Object.assign({}, existing);
       for (const key of Object.keys(clean)) {
-        if (clean[key] !== '' || key === 'coverImage' || key === 'author') merged[key] = clean[key];
+        if (clean[key] !== '' || key === 'coverImage' || key === 'author' || key === 'focusKeyword') merged[key] = clean[key];
       }
       if (clean.title && clean.title !== existing.title) {
         merged.slug = uniqueSlug(slugify(clean.title), data.notes, id);

@@ -77,6 +77,12 @@
             <input id="f-title" maxlength="200" required>
           </div>
 
+          <div class="field">
+            <label for="f-keyword">Palabra clave objetivo (SEO)</label>
+            <input id="f-keyword" maxlength="80" placeholder="ej. productos importados">
+            <div class="field-hint">La frase por la que querés que esta nota aparezca en Google. Habilita el análisis de abajo.</div>
+          </div>
+
           <div class="field-row">
             <div class="field">
               <label for="f-category">Categoría</label>
@@ -123,6 +129,17 @@
             <button type="button" class="btn-plain" id="btn-unpublish" style="display:none;">Despublicar</button>
             <button type="button" class="btn-plain btn-danger" id="btn-delete" style="display:none;">Eliminar</button>
           </div>
+
+          <div class="seo-panel">
+            <div class="seo-panel__head">
+              <div class="seo-score" id="seo-score">--</div>
+              <div>
+                <p class="seo-panel__title">Análisis SEO</p>
+                <p class="seo-panel__subtitle">Se recalcula solo, mientras escribís. No usa IA ni se conecta a internet.</p>
+              </div>
+            </div>
+            <div class="seo-checks" id="seo-checks"></div>
+          </div>
         </form>
 
         <div class="preview-panel">
@@ -141,6 +158,7 @@
 
 <script src="../js/markdown.js"></script>
 <script src="../js/theme.js"></script>
+<script src="seo.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>
