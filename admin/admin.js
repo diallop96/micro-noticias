@@ -61,7 +61,8 @@
 
   async function api(path, opts) {
     opts = opts || {};
-    const headers = Object.assign({ 'Content-Type': 'application/json', 'X-Admin-Pin': getPin() }, opts.headers || {});
+    const pinAtCallTime = getPin();
+    const headers = Object.assign({ 'Content-Type': 'application/json', 'X-Admin-Pin': pinAtCallTime }, opts.headers || {});
     let res;
     try {
       res = await fetch(path, Object.assign({}, opts, { headers }));
@@ -70,7 +71,16 @@
     }
     let data = null;
     try { data = await res.json(); } catch (e) { /* respuesta vacía */ }
-    if (res.status === 401) { clearPin(); showLogin('Tu sesión expiró o el PIN es inválido. Ingresá de nuevo.'); throw new Error('No autorizado'); }
+    if (res.status === 401) {
+      // Solo cerrar sesión si el PIN que falló sigue siendo el activo: evita
+      // que una revalidación vieja (ej. el chequeo automático de boot()) se
+      // resuelva tarde y pise un login nuevo y válido hecho mientras tanto.
+      if (getPin() === pinAtCallTime) {
+        clearPin();
+        showLogin('Tu sesión expiró o el PIN es inválido. Ingresá de nuevo.');
+      }
+      throw new Error('No autorizado');
+    }
     if (!res.ok) throw new Error((data && data.error) || ('Error ' + res.status));
     return data;
   }
@@ -80,8 +90,12 @@
     els.adminMain.style.display = 'none';
     els.logoutBtn.style.display = 'none';
     els.loginError.textContent = msg || '';
-    els.pinInput.value = '';
-    els.pinInput.focus();
+    // No pisar el campo si el usuario ya está escribiendo ahí: evita que una
+    // revalidación silenciosa en segundo plano (boot()) borre lo que tipeó.
+    if (document.activeElement !== els.pinInput) {
+      els.pinInput.value = '';
+      els.pinInput.focus();
+    }
   }
 
   function showDashboard() {
@@ -333,7 +347,11 @@
       showDashboard();
       loadIntoForm(notes[0] || null);
     } catch (err) {
-      showLogin(err.message === 'No autorizado' ? 'Ingresá el PIN para continuar.' : err.message);
+      // Si mientras tanto se logró un login válido (getPin() ya no está
+      // vacío), no pisar esa sesión con el error de este chequeo viejo.
+      if (!getPin()) {
+        showLogin(err.message === 'No autorizado' ? 'Ingresá el PIN para continuar.' : err.message);
+      }
     }
   })();
 })();
