@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /server/
+
+Sitemap: https://diallop96.github.io/micro-noticias/sitemap.xml

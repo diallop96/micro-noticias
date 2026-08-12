@@ -22,15 +22,19 @@ const { URL } = require('url');
 
 const ROOT = path.join(__dirname, '..');
 const NOTES_PATH = path.join(ROOT, 'data', 'notes.json');
+const SITEMAP_PATH = path.join(ROOT, 'sitemap.xml');
 const CONFIG_PATH = path.join(__dirname, 'config.json');
 const PORT = Number(process.env.PORT) || 4000;
 const HOST = '127.0.0.1'; // nunca cambiar a 0.0.0.0: esto es lo que mantiene el panel privado
+const SITE_URL = 'https://diallop96.github.io/micro-noticias/';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -104,6 +108,48 @@ function readNotes() {
 
 function writeNotes(data) {
   fs.writeFileSync(NOTES_PATH, JSON.stringify(data, null, 2) + '\n', 'utf8');
+  writeSitemap(data);
+}
+
+function escapeXml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+// Se regenera automáticamente cada vez que se crea, edita, publica,
+// despublica o borra una nota: nunca queda desactualizado a mano.
+function writeSitemap(data) {
+  const published = (data.notes || [])
+    .filter(n => n.status === 'published')
+    .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+
+  const urls = [
+    { loc: SITE_URL, changefreq: 'daily', priority: '1.0' },
+    ...published.map(n => ({
+      loc: SITE_URL + 'nota.html?slug=' + encodeURIComponent(n.slug),
+      lastmod: (n.updatedAt || n.publishedAt || '').slice(0, 10),
+      changefreq: 'monthly',
+      priority: '0.8'
+    }))
+  ];
+
+  const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    urls.map(u =>
+      '  <url>\n' +
+      '    <loc>' + escapeXml(u.loc) + '</loc>\n' +
+      (u.lastmod ? '    <lastmod>' + u.lastmod + '</lastmod>\n' : '') +
+      '    <changefreq>' + u.changefreq + '</changefreq>\n' +
+      '    <priority>' + u.priority + '</priority>\n' +
+      '  </url>\n'
+    ).join('') +
+    '</urlset>\n';
+
+  fs.writeFileSync(SITEMAP_PATH, xml, 'utf8');
 }
 
 const DIACRITICS_RE = new RegExp('[̀-ͯ]', 'g');

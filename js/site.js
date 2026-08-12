@@ -1,5 +1,7 @@
 (function () {
   const DATA_URL = 'data/notes.json';
+  const SITE_URL = 'https://diallop96.github.io/micro-noticias/';
+  const SITE_NAME = 'Micro Noticias';
 
   const CATEGORY_ICONS = {
     'Microeconomía': '📊',
@@ -42,7 +44,7 @@
 
   function noteCardHtml(note) {
     const img = note.coverImage
-      ? '<img src="' + esc(note.coverImage) + '" alt="" loading="lazy">'
+      ? '<img src="' + esc(note.coverImage) + '" alt="' + esc(note.title) + '" loading="lazy">'
       : '';
     return (
       '<a class="note-card" href="nota.html?slug=' + encodeURIComponent(note.slug) + '">' +
@@ -59,7 +61,7 @@
 
   function featuredHtml(note) {
     const img = note.coverImage
-      ? '<img src="' + esc(note.coverImage) + '" alt="">'
+      ? '<img src="' + esc(note.coverImage) + '" alt="' + esc(note.title) + '">'
       : '';
     return (
       '<div class="featured__media">' + img + '</div>' +
@@ -104,6 +106,12 @@
 
     const [featured, ...rest] = notes;
     if (featuredEl) featuredEl.innerHTML = featuredHtml(featured);
+    if (featured.coverImage) {
+      const ogImg = document.querySelector('meta[property="og:image"]');
+      const twImg = document.querySelector('meta[name="twitter:image"]');
+      if (ogImg) ogImg.setAttribute('content', featured.coverImage);
+      if (twImg) twImg.setAttribute('content', featured.coverImage);
+    }
 
     const categories = Array.from(new Set(notes.map(n => n.category))).sort();
     if (filtersEl && categories.length > 1) {
@@ -153,6 +161,8 @@
     const note = notes.find(n => n.slug === slug && n.status === 'published');
     if (!note) {
       document.title = 'Nota no encontrada — Micro Noticias';
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta) robotsMeta.setAttribute('content', 'noindex, follow');
       root.innerHTML =
         '<div class="empty-state"><h3>No encontramos esta nota</h3>' +
         '<p>Puede que todavía esté en borrador o que el enlace sea incorrecto.</p>' +
@@ -160,12 +170,47 @@
       return;
     }
 
-    document.title = note.title + ' — Micro Noticias';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', note.excerpt || '');
+    const pageTitle = note.title + ' — Micro Noticias';
+    const articleUrl = SITE_URL + 'nota.html?slug=' + encodeURIComponent(note.slug);
+    document.title = pageTitle;
+
+    function setMeta(selector, attr, value) {
+      const node = document.querySelector(selector);
+      if (node) node.setAttribute(attr, value);
+    }
+    setMeta('meta[name="description"]', 'content', note.excerpt || '');
+    setMeta('#canonical-link', 'href', articleUrl);
+    setMeta('#og-title', 'content', pageTitle);
+    setMeta('#og-description', 'content', note.excerpt || '');
+    setMeta('#og-url', 'content', articleUrl);
+    setMeta('#twitter-title', 'content', pageTitle);
+    setMeta('#twitter-description', 'content', note.excerpt || '');
+    if (note.coverImage) {
+      setMeta('#og-image', 'content', note.coverImage);
+      setMeta('#twitter-image', 'content', note.coverImage);
+    }
+
+    const ld = document.createElement('script');
+    ld.type = 'application/ld+json';
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: note.title,
+      description: note.excerpt,
+      image: note.coverImage ? [note.coverImage] : undefined,
+      datePublished: note.publishedAt,
+      dateModified: note.updatedAt || note.publishedAt,
+      articleSection: note.category,
+      inLanguage: 'es',
+      author: { '@type': 'Organization', name: note.author || SITE_NAME },
+      publisher: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+      url: articleUrl
+    });
+    document.head.appendChild(ld);
 
     const img = note.coverImage
-      ? '<div class="article__media"><img src="' + esc(note.coverImage) + '" alt=""></div>'
+      ? '<div class="article__media"><img src="' + esc(note.coverImage) + '" alt="' + esc(note.title) + '"></div>'
       : '';
 
     root.innerHTML =
