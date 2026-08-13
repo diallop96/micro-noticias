@@ -1,6 +1,22 @@
 {
   "notes": [
     {
+      "title": "Por qué persisten los mercados paralelos de dólares en la Argentina",
+      "excerpt": "Una brecha cambiaria no desaparece porque esté prohibida: aparece porque hay una demanda que el precio oficial no logra satisfacer y busca otro canal.",
+      "category": "Análisis",
+      "author": "Redacción Micro Noticias",
+      "coverImage": "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1600&q=80",
+      "body": "Cada vez que existe una brecha entre un tipo de cambio oficial y uno paralelo, aparece la misma pregunta: si está desalentado o directamente restringido, ¿por qué no desaparece? La respuesta no tiene que ver con la ley, sino con incentivos.\n\n## Por qué aparece la brecha\n\nCuando el tipo de cambio oficial está fijado o controlado por debajo de lo que el mercado estaría dispuesto a pagar, se genera lo que en microeconomía se llama un **precio techo**: una restricción que, en lugar de eliminar la demanda excedente, la desplaza a otro lado. Esa demanda que no se puede satisfacer al precio oficial no desaparece: busca un canal alternativo para expresarse, y ese canal es el mercado paralelo.\n\n> Un precio techo no borra la escasez, solo cambia quién la administra: en vez del mercado, la administra quien controla el acceso al precio oficial.\n\n## Quién arbitra esa diferencia\n\nLa brecha entre ambos precios no es un capricho: refleja, casi en tiempo real, [la misma lógica que explica por qué la inflación alta obliga a recalcular precios todo el tiempo](nota.html?slug=por-que-la-inflacion-alta-le-complica-el-calculo-a-las-pymes-bonaerenses): expectativas sobre el futuro del tipo de cambio, la cantidad de pesos en circulación relativa a la demanda de dólares, y el riesgo percibido de mantener ahorros en moneda local.\n\nQuienes participan del mercado paralelo no están, en general, haciendo algo distinto de lo que hace cualquier arbitrajista en cualquier mercado: identifican una diferencia de precio entre dos canales para el mismo bien y la explotan hasta que, en el margen, deja de ser rentable seguir haciéndolo.\n\n- Cuanto más estricto el control de acceso al precio oficial, mayor tiende a ser la brecha.\n- Cuanto más inciertas las expectativas sobre el tipo de cambio futuro, mayor tiende a ser la brecha.\n- Cuanto menor el volumen de operaciones formales disponibles, mayor tiende a ser la brecha.\n\n## Qué pasa cuando se achica\n\nNinguna brecha cambiaria se cierra por decreto: se cierra cuando el precio oficial se acerca al que el mercado estaría dispuesto a convalidar, o cuando baja la incertidumbre que empuja a la gente a cubrirse. Ambos caminos son, en el fondo, la misma solución: reducir la distancia entre lo que el control dice que vale algo y lo que la gente cree que realmente vale.\n\n## La buena noticia\n\nLas brechas cambiarias no son un rasgo permanente de ninguna economía: aparecen cuando la incertidumbre y las restricciones son altas, y se reducen -a veces gradualmente, a veces de golpe- apenas esas dos condiciones ceden. Cada episodio de brecha alta que atravesó la Argentina terminó, tarde o temprano, achicándose. El desafío no es si va a pasar, sino cuánto cuesta el camino hasta ahí. Entender la lógica que hay detrás ayuda a no confundir el síntoma -la brecha- con la enfermedad, y a reconocer las señales tempranas de cuando el camino empieza a acortarse.\n\n*Nota de análisis elaborada por la redacción de Micro Noticias.*",
+      "focusKeyword": "mercado paralelo",
+      "readMinutes": 2,
+      "id": "n-fbb7846bbb4a",
+      "slug": "por-que-persisten-los-mercados-paralelos-de-dolares-en-la-argentina",
+      "status": "published",
+      "createdAt": "2026-08-13T00:23:48.266Z",
+      "updatedAt": "2026-08-13T00:23:48.680Z",
+      "publishedAt": "2026-08-13T00:23:48.680Z"
+    },
+    {
       "title": "Por qué dos supermercados de la misma cuadra cobran distinto",
       "excerpt": "El mismo producto, la misma cuadra, precios distintos. No es azar: es una estrategia de segmentación de precios bien conocida en microeconomía.",
       "category": "Análisis",
